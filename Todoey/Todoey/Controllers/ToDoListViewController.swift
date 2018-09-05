@@ -10,17 +10,19 @@ import UIKit
 import CoreData
 
 class ToDoListViewController: UITableViewController {
-    var itemArray = [Item]()
   
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+  var itemArray = [Item]()
+  
+  let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
   
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-      loadItems()
 
+    loadItems()
   }
   
   //MARK - TableView Datasource Methods
@@ -49,7 +51,7 @@ class ToDoListViewController: UITableViewController {
     
       saveItems()
     
-      tableView.deselectRow(at: indexPath, animated: true)
+//      tableView.deselectRow(at: indexPath, animated: true)
   }
   
   // MARK - add new items
@@ -86,13 +88,13 @@ class ToDoListViewController: UITableViewController {
     do{
       try context.save()
     } catch {
-      print("Error saving context:l \(error)")
+      print("Error saving context: \(error)")
     }
-    tableView.reloadData()
+    self.tableView.reloadData()
   }
   
-  func loadItems() {
-    let request : NSFetchRequest<Item> = Item.fetchRequest()
+  // this has an internal parameter name (with), an external parameter name (request), and a default parameter that will be used if none is provided
+  func loadItems(with request : NSFetchRequest<Item> = Item.fetchRequest()) {
     do {
       itemArray = try context.fetch(request)
     } catch {
@@ -100,5 +102,19 @@ class ToDoListViewController: UITableViewController {
     }
   }
   
+}
+
+//MARK: - Search bar methods
+extension ToDoListViewController: UISearchBarDelegate {
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    let request : NSFetchRequest<Item>  = Item.fetchRequest()
+
+    request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+    
+    request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+
+    loadItems(with: request)
+
+  }
 }
 
