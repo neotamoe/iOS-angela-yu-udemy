@@ -13,6 +13,8 @@ class CategoryViewController: UITableViewController {
   
     var categoryArray = [Category]()
   
+
+  
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
@@ -36,6 +38,20 @@ class CategoryViewController: UITableViewController {
       cell.textLabel?.text = category.name
       
       return cell
+    }
+  
+  
+    //MARK - TableView Delegate Methods
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+      performSegue(withIdentifier: "goToItems", sender: self)
+    }
+  
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+      let destinationVC = segue.destination as! ToDoListViewController
+      
+      if let indexPath = tableView.indexPathForSelectedRow {
+        destinationVC.selectedCategory = categoryArray[indexPath.row]
+      }
     }
   
     //MARK - Data Manipulation Methods
@@ -86,7 +102,6 @@ class CategoryViewController: UITableViewController {
       present(alert, animated: true, completion: nil)
     }
   
-  
-    //MARK - TableView Delegate Methods
+
   
 }
