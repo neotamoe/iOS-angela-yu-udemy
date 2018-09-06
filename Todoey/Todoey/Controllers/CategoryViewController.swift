@@ -7,20 +7,20 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
   
     var categoryArray = [Category]()
   
-
+    let realm = try! Realm()
   
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        loadCategories()
+//        loadCategories()
       
 
     }
@@ -55,10 +55,12 @@ class CategoryViewController: UITableViewController {
     }
   
     //MARK - Data Manipulation Methods
-    func saveCategories() {
+  func save(category: Category) {
       
       do{
-        try context.save()
+        try realm.write {
+          realm.add(category)
+        }
       } catch {
         print("Error saving context: \(error)")
       }
@@ -66,14 +68,14 @@ class CategoryViewController: UITableViewController {
     }
   
     // this has an internal parameter name (with), an external parameter name (request), and a default parameter that will be used if none is provided
-    func loadCategories(with request : NSFetchRequest<Category> = Category.fetchRequest()) {
-      do {
-        categoryArray = try context.fetch(request)
-      } catch {
-        print("error fetching data from context \(error)")
-      }
-      tableView.reloadData()
-    }
+//    func loadCategories(with request : NSFetchRequest<Category> = Category.fetchRequest()) {
+//      do {
+//        categoryArray = try context.fetch(request)
+//      } catch {
+//        print("error fetching data from context \(error)")
+//      }
+//      tableView.reloadData()
+//    }
   
     //MARK - Add New Categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -84,11 +86,11 @@ class CategoryViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
         
-        let newCategory = Category(context: self.context)
+        let newCategory = Category()
         newCategory.name = textField.text!
         self.categoryArray.append(newCategory)
         
-        self.saveCategories()
+          self.save(category: newCategory)
         
       }
       
