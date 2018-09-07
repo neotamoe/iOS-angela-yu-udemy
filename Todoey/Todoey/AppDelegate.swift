@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       print(Realm.Configuration.defaultConfiguration.fileURL)
 
       do{
-        let realm = try Realm()
+        let realm = try! Realm()
       } catch {
         print("error initializing new realm, \(error)")
       }

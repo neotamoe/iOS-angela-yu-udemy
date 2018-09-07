@@ -59,6 +59,8 @@ class ToDoListViewController: UITableViewController {
       do {
         try realm.write {
           item.done = !item.done
+          // if we wanted to delete on click instead of checking it as done
+          // realm.delete(item)
         }
       } catch {
         print("error saving done status, \(error)")
