@@ -55,15 +55,18 @@ class ToDoListViewController: UITableViewController {
 
   // MARK - TableView Delegate Methods
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    //    NOTE: order matters!  must delete from context first, then your array
-//      context.delete(itemArray[indexPath.row])
-//      itemArray.remove(at: indexPath.row)
+    if let item = todoItems?[indexPath.row] {
+      do {
+        try realm.write {
+          item.done = !item.done
+        }
+      } catch {
+        print("error saving done status, \(error)")
+      }
+    }
+    tableView.reloadData()
     
-//      todoItems[indexPath.row].done = !todoItems[indexPath.row].done
-//
-//      saveItems()
-    
-//      tableView.deselectRow(at: indexPath, animated: true)
+    tableView.deselectRow(at: indexPath, animated: true)
   }
   
   // MARK - add new items
@@ -83,7 +86,7 @@ class ToDoListViewController: UITableViewController {
                     currentCategory.items.append(newItem)
                   }
               } catch {
-                  print("Error saving context: \(error)")
+                  print("Error saving new item: \(error)")
               }
           }
         
