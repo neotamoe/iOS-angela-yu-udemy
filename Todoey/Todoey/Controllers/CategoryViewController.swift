@@ -15,8 +15,6 @@ class CategoryViewController: UITableViewController {
   
     let realm = try! Realm()
   
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,8 +30,6 @@ class CategoryViewController: UITableViewController {
   
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-      
-      let category = categories?[indexPath.row]
       
       cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
       
