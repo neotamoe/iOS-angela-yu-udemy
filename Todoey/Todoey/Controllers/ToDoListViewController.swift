@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
   
   let realm = try! Realm()
   var todoItems : Results<Item>?
@@ -20,13 +20,13 @@ class ToDoListViewController: UITableViewController {
     }
   }
   
-  let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+//  let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-
+//    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+    
   }
   
   //MARK - TableView Datasource Methods
@@ -35,17 +35,17 @@ class ToDoListViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+    let cell = super.tableView(tableView, cellForRowAt: indexPath)
     
-    if let item = todoItems?[indexPath.row] {
+    if let item = todoItems?[indexPath.row]{
+    
       cell.textLabel?.text = item.title
-      
       cell.accessoryType = item.done ? .checkmark : .none
-
+    
     } else {
-
+      
       cell.textLabel?.text = "No Items Added"
-
+    
     }
     
     return cell
@@ -104,6 +104,23 @@ class ToDoListViewController: UITableViewController {
     
       present(alert, animated: true, completion: nil)
   }
+  
+  //MARK - Delete Data from Swipe
+  override func updateModel(at indexPath: IndexPath) {
+    if let itemToDelete = todoItems?[indexPath.row] {
+      do{
+        try realm.write {
+          print(itemToDelete)
+          realm.delete(itemToDelete)
+        }
+      } catch {
+        print("Error deleting category: \(error)")
+      }
+      tableView.reloadData()
+      
+    }
+  }
+  
   
   // MARK - Model Manipulation Methods
 

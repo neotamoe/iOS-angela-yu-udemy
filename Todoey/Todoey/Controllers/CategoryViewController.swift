@@ -18,11 +18,8 @@ class CategoryViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
       
-        tableView.rowHeight = 75.0
-      
         loadCategories()
       
-
     }
 
     //MARK - TableView Datasource Methods
