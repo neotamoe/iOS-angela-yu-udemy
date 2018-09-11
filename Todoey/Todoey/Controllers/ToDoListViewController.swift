@@ -21,13 +21,45 @@ class ToDoListViewController: SwipeTableViewController {
     }
   }
   
-//  let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+  @IBOutlet weak var searchBar: UISearchBar!
+  
+  //  let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-//    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     tableView.separatorStyle = .none
+
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    title = selectedCategory?.name
+
+    guard let colorHex = selectedCategory?.color else { fatalError() }
+    
+    updateNavBar(withHexCode: colorHex)
+
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    updateNavBar(withHexCode: "1D9BF6")
+  }
+  
+  //MARK - NavBar Setup Methods
+  func updateNavBar(withHexCode colorHexCode: String) {
+    guard let navBar = navigationController?.navigationBar else {
+      fatalError("Navigation controller does not exist")}
+    
+    
+    guard let navBarColor = UIColor(hexString: colorHexCode) else { fatalError() }
+    
+    navBar.barTintColor = navBarColor
+    
+    searchBar.barTintColor = navBarColor
+    
+    navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+    
+    navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
   }
   
   //MARK - TableView Datasource Methods
